@@ -1,3 +1,4 @@
+from email import header
 from os import mkdir
 import os
 import re
@@ -85,6 +86,7 @@ class Parse:
 
             pathDir = f'stories/{"_".join(title.split(" ")).split(".")[0]}'
             path = f'stories/{"_".join(title.split(" ")).split(".")[0]}/img/poster.jpg'
+            pathToImage = './img/poster.jpg'
             result = soup.find('div', {'class': 'content-lede-image'}).find('img')['src'].split("?")[0]
 
             if result in "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/legacy-fre-image-placeholder-1648561128.png":
@@ -102,19 +104,20 @@ class Parse:
             if not os.path.exists(path):
                 request.urlretrieve(result, path)
 
-            return path
+            return pathToImage
         except Exception as e:
             #print(e)
             return None
 
     def find_stories(self, page, title):
+        reg = re.compile('[^0-9\s^a-zA-Z]')
+        title = reg.sub('', title)
+
         soup = bs(page, 'html.parser')
         stories = []
         try:
             container = soup.find('div', {'class': 'content-container'})
-            print("\n\nstart")
-            #print(container.prettify())
-            #print("\n\n")
+            container_type = container.attrs['class'][1]
 
             for el in container.find_all('p'):
                 if not len(el.text) > 0:
@@ -124,11 +127,33 @@ class Parse:
                 if not len(el.text) > 0:
                     el.extract()
 
-            #print(container.prettify())
-            print(title + "\n")
-            print(len(container.select('.article-body-content h2 ~ div.embed img.lazyimage')))
-            print(len(container.select('.article-body-content hr + .body-h2, div.embed + .body-h2')))
-            print("\n\nend")
+            if container_type == "standard-container":
+                images = container.select('.article-body-content h2 ~ div.embed img')
+                headers = container.select('.article-body-content hr + .body-h2, div.embed + .body-h2, .body-text + .accordion ~ .body-h2')
+                links = container.select('.article-body-content h2 ~ div.embed a')
+
+                if len(images) < len(headers):
+                    headers = headers[:-(len(headers) - len(images))]
+                
+            elif container_type == 'listicle-container':
+                images = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-media-outer img')
+                headers = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-hed-text')
+                links = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-media-outer a')
+            else:
+                return None
+
+            if len(images) == len(headers) and len(images) == len(links):
+                for idx, story in enumerate(images):
+                    pathToImage = f'./img/{idx}.jpg'
+                    path = f'stories/{"_".join(title.split(" ")).split(".")[0]}/img/{idx}.jpg'
+                    result = story['data-src'].split("?")[0]
+                    
+                    if not os.path.exists(path):
+                        request.urlretrieve(result, path)
+
+                    stories.append({'header': headers[idx].text, 'image': pathToImage, 'link': links[idx]['href']})
+
+            return stories
 
         except Exception as e:
             print(e)
@@ -146,4 +171,23 @@ class Parse:
             stories = self.find_stories(res.text, content_header_title)
             #print(content_poster)
 
-            build = PageBuilder()
+            if content_poster != None or stories != None:
+                build = PageBuilder()
+                build.set_page_title(content_header_title)
+                build.set_page_poster(content_poster)
+
+                build.build_start_page()
+                build.build_page_head()
+                build.build_story_start("kopasxa", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/1200px-How_to_use_icon.svg.png")
+                build.build_story("", "", content_header_description, "first_story")
+
+                for story in stories:
+                    build.build_story(story['image'], story['header'], story['link'])
+
+                build.build_end_page()
+
+                reg = re.compile('[^0-9\s^a-zA-Z]')
+                title = reg.sub('', content_header_title)
+                path = f'stories/{"_".join(title.split(" ")).split(".")[0]}/index'
+
+                build.build_page(path)
