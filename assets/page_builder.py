@@ -1,3 +1,4 @@
+import re
 import config
 class PageBuilder:
     def __init__(self):
@@ -33,17 +34,21 @@ class PageBuilder:
         return
 
     def build_page_head(self):
+        reg = re.compile('[^0-9\s^a-zA-Z]')
+        title = reg.sub('', self.page_title)
+        path = f'{config.path_to_stories}/{"_".join(title.split(" ")).split(".")[0]}/index'
         self.page += f"""
     <head>
         <meta charset="utf-8">
         <title>{self.page_title}</title>
         <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+        <link rel="canonical" href="{config.my_domain}{path.split(config.path_root)[1]}.html">
         {self.style}
     </head>
         """
         return
 
-    def build_story(self, cover_image_path, title, description, story_type="story"):
+    def build_story(self, cover_image_path, title, description, link="", story_type="story"):
         if story_type == "first_story":
             self.page += f"""
             <amp-story-page id="cover">
@@ -60,21 +65,33 @@ class PageBuilder:
         elif story_type == "story":
             self.page += f"""
             <amp-story-page id="page1">
-                <amp-story-grid-layer template="vertical">
-                    <h1>{title}</h1>
+                <amp-story-grid-layer template="fill">
                     <amp-img src="{cover_image_path}" width="720" height="1280" layout="responsive">
                     </amp-img>
-                    <q>Dogs come when they're called. Cats take a message and get back to you. --Mary Bly</q>
                 </amp-story-grid-layer>
+                <amp-story-grid-layer template="vertical" class="bottom">
+                    <h4>{title}</h4>
+                    <!-- <q>{description}</q> -->
+                </amp-story-grid-layer>
+                <amp-story-page-outlink layout="nodisplay" theme="dark">
+                    <a href="{link}" title="Read More"></a>
+                </amp-story-page-outlink>
             </amp-story-page>
             """
         return
 
     def build_story_start(self, publisher, publisher_logo):
+        script = '{"ad-attributes": {"type": "adsense","data-ad-client": "ca-pub-5893452305550881","data-ad-slot": "7525101101"}}'
         self.page += f"""
     <body>
         <amp-story standalone title="{self.page_title}" publisher="{publisher}"
-            publisher-logo-src="{publisher_logo}" poster-portrait-src="{self.page_poster_path}">"""
+            publisher-logo-src="{publisher_logo}" poster-portrait-src="{self.page_poster_path}">
+
+            <amp-story-auto-ads>
+                <script type="application/json">
+                    {script}  
+                </script>
+            </amp-story-auto-ads>"""
         return
 
     def build_end_page(self):

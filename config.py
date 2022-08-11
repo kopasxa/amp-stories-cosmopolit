@@ -3,6 +3,12 @@ min_count_image_on_page = 5
 initial_query_for_search = "https://www.cosmopolitan.com/search/?q=COMFY+CLOTHES"
 path_to_save_images = "assets/images"
 path_to_save_pages = "assets/pages"
+publisher = "kopasxa"
+publisher_logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/1200px-How_to_use_icon.svg.png"
+timeout_page_generate = 0.1
+path_root = "var/www/8" # path to domain root
+path_to_stories = path_root + "/stories"
+my_domain = "http://8.eprosto.online/"
 
 style_for_page = """
 <style amp-boilerplate>
@@ -73,8 +79,8 @@ style_for_page = """
     </style>
 </noscript>
 <script async src="https://cdn.ampproject.org/v0.js"></script>
-<script async custom-element="amp-video" src="https://cdn.ampproject.org/v0/amp-video-0.1.js"></script>
 <script async custom-element="amp-story" src="https://cdn.ampproject.org/v0/amp-story-1.0.js"></script>
+<script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400" rel="stylesheet">
 <style amp-custom>
     amp-story {
@@ -88,9 +94,10 @@ style_for_page = """
 
     h1 {
     font-weight: bold;
-    font-size: 2.875em;
+    font-size: 2.2em;
     font-weight: normal;
     line-height: 1.174;
+    background-color: black;
     }
 
     p {
@@ -98,6 +105,7 @@ style_for_page = """
     font-size: 1.3em;
     line-height: 1.5em;
     color: #fff;
+    background-color: black;
     }
 
     q {
@@ -107,6 +115,16 @@ style_for_page = """
 
     amp-story-grid-layer.bottom {
     align-content: end;
+    }
+
+    amp-story-grid-layer.bottom h4 {
+        font-weight: bold;
+        font-size: 1.8em;
+        font-weight: normal;
+        line-height: 1.174;
+        background-color: black;
+        padding: 0.5em;
+        margin-bottom: 2.2em;
     }
 
     amp-story-grid-layer.noedge {
