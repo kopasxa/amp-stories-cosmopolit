@@ -1,9 +1,7 @@
-from email import header
 from os import mkdir
 import os
 import re
 import time
-from turtle import title
 from urllib import request
 import config
 from bs4 import BeautifulSoup as bs
