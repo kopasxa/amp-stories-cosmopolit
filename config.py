@@ -80,7 +80,7 @@ style_for_page = """
 </noscript>
 <script async src="https://cdn.ampproject.org/v0.js"></script>
 <script async custom-element="amp-story" src="https://cdn.ampproject.org/v0/amp-story-1.0.js"></script>
-<script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
+<script async="" custom-element="amp-story-auto-ads" src="https://cdn.ampproject.org/v0/amp-story-auto-ads-0.1.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400" rel="stylesheet">
 <style amp-custom>
     amp-story {
