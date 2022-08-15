@@ -5,8 +5,8 @@ path_to_save_images = "assets/images"
 path_to_save_pages = "assets/pages"
 publisher = "kopasxa"
 publisher_logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/1200px-How_to_use_icon.svg.png"
-timeout_page_generate = 1
-path_root = "var/www/8" # path to domain root
+timeout_page_generate = 10
+path_root = ".." # path to domain root
 path_to_stories = path_root + "/stories"
 my_domain = "http://8.eprosto.online"
 

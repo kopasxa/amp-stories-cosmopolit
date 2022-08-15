@@ -1,4 +1,6 @@
 from os import mkdir
+from tkinter import N
+from PIL import Image
 import os
 import re
 import time
@@ -77,6 +79,66 @@ class Parse:
 
         return arcticles_list
 
+    def convert_to_webp(self, source, filename):
+        destination = source + filename.split(".")[0] + ".webp"
+
+        try:
+            image = Image.open(source + filename)
+            image.save(destination, format="webp")
+            os.remove(source + filename)
+        except Exception as e:
+            return None
+        
+        return destination
+
+    def compress_img(self, image_name, new_size_ratio=0.9, quality=90, width=None, height=None, to_webp=True):
+        try:
+            img = Image.open(image_name)
+
+            if new_size_ratio < 1.0:
+                img = img.resize((int(img.size[0] * new_size_ratio), int(img.size[1] * new_size_ratio)), Image.ANTIALIAS)
+            elif width and height:
+                img = img.resize((width, height), Image.ANTIALIAS)
+            filename, ext = os.path.splitext(image_name)
+            if to_webp:
+                new_filename = self.convert_to_webp(image_name.split(image_name.split("/")[-1])[0], image_name.split("/")[-1])
+
+                if new_filename == None:
+                    new_filename = f"{filename}{ext}" 
+
+            else:
+                new_filename = f"{filename}{ext}"
+            try:
+                img.save(new_filename, quality=quality, optimize=True)
+            except OSError:
+                img = img.convert("RGB")
+                img.save(new_filename, quality=quality, optimize=True)
+
+            return new_filename
+        except Exception as e:
+            print(e)
+            return None
+
+    def save_image(self, result, pathDir, path):
+        try:
+            if result != None:
+                if not os.path.exists(pathDir):
+                    mkdir(pathDir)
+                    mkdir(pathDir + "/img")
+        except Exception as e:
+            pass
+            #print(e)
+
+        if not os.path.exists(path):
+            request.urlretrieve(result, path)
+
+        res = self.compress_img(path)
+
+        if res != None:
+            return "./img/" + res.split("/")[-1]
+        else:
+            return None
+
     def find_poster_path(self, page, title):
         soup = bs(page, 'html.parser')
         try:
@@ -85,23 +147,13 @@ class Parse:
 
             pathDir = f'{config.path_to_stories}/{"_".join(title.split(" ")).split(".")[0]}'
             path = f'{config.path_to_stories}/{"_".join(title.split(" ")).split(".")[0]}/img/poster.jpg'
-            pathToImage = './img/poster.jpg'
+
             result = soup.find('div', {'class': 'content-lede-image'}).find('img')['src'].split("?")[0]
 
             if result in "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/legacy-fre-image-placeholder-1648561128.png":
                 return None
 
-            try:
-                if result != None:
-                    if not os.path.exists(pathDir):
-                        mkdir(pathDir)
-                        mkdir(pathDir + "/img")
-            except Exception as e:
-                pass
-                #print(e)
-
-            if not os.path.exists(path):
-                request.urlretrieve(result, path)
+            pathToImage = self.save_image(result, pathDir, path)
 
             return pathToImage
         except Exception as e:
@@ -147,8 +199,10 @@ class Parse:
                     path = f'{config.path_to_stories}/{"_".join(title.split(" ")).split(".")[0]}/img/{idx}.jpg'
                     result = story['data-src'].split("?")[0]
                     
-                    if not os.path.exists(path):
-                        request.urlretrieve(result, path)
+                    if result in "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/legacy-fre-image-placeholder-1648561128.png":
+                        return None
+
+                    pathToImage = self.save_image(result, pathToImage, path)
 
                     stories.append({'header': headers[idx].text, 'image': pathToImage, 'link': links[idx]['href']})
 
@@ -208,7 +262,7 @@ class Parse:
 
                 self.register_sitemap(f'{config.my_domain}{path.split(config.path_root)[1]}.html')
 
-                time.sleep(config.timeout_page_generate * 60)
+            time.sleep(config.timeout_page_generate * 60)
 
     def __del__(self):
         self.driver.quit()
