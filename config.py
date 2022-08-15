@@ -3,7 +3,7 @@ min_count_image_on_page = 5
 initial_query_for_search = "https://www.cosmopolitan.com/search/?q=COMFY+CLOTHES"
 path_to_save_images = "assets/images"
 path_to_save_pages = "assets/pages"
-publisher = "kopasxa"
+publisher = "Cosmo"
 publisher_logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/1200px-How_to_use_icon.svg.png"
 timeout_page_generate = 10
 path_root = ".." # path to domain root
@@ -80,7 +80,7 @@ style_for_page = """
 </noscript>
 <script async src="https://cdn.ampproject.org/v0.js"></script>
 <script async custom-element="amp-story" src="https://cdn.ampproject.org/v0/amp-story-1.0.js"></script>
-<script async="" custom-element="amp-story-auto-ads" src="https://cdn.ampproject.org/v0/amp-story-auto-ads-0.1.js"></script>
+<script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400" rel="stylesheet">
 <style amp-custom>
     amp-story {
