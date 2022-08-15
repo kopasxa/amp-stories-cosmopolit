@@ -86,8 +86,8 @@ class PageBuilder:
 
             <amp-ad width="100vw" height="320"
                 type="adsense"
-                data-ad-client="ca-pub-8064390991973365"
-                data-ad-slot="1224845979"
+                data-ad-client="ca-pub-8546792886714030"
+                data-ad-slot="4324750676"
                 data-auto-format="rspv"
                 data-full-width="">
                 <div overflow=""></div>
