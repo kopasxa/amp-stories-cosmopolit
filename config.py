@@ -1,12 +1,11 @@
 keywords_for_search = "Best"
 min_count_image_on_page = 5
-initial_query_for_search = "https://www.cosmopolitan.com/search/?q=BEAUTY"
-path_to_save_images = "assets/images"
-path_to_save_pages = "assets/pages"
+queries = ["BEAUTY", "MAKEUP", "BEST+HAIR+PRODUCTS", "NAILS"]
+initial_query_for_search = "https://www.cosmopolitan.com/search/?q="
 publisher = "Cosmo"
-publisher_logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/1200px-How_to_use_icon.svg.png"
-timeout_page_generate = 100
-path_root = ".." # path to domain root
+publisher_logo = "https://womenosophy.com/womenosophy_logo.png"
+timeout_page_generate = 60
+path_root = "." # path to domain root
 path_to_stories = path_root + "/stories"
 my_domain = "http://8.eprosto.online"
 

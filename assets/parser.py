@@ -29,8 +29,8 @@ class Parse:
         #self.driver = webdriver.Chrome(options=self.options, executable_path="assets/chromedriver.exe")
         self.driver = webdriver.Firefox(options=self.options)
 
-    def search(self, filter):
-        self.driver.get(url=self.search_url)
+    def search(self, url, filter):
+        self.driver.get(url=self.search_url + url)
 
         wait = WebDriverWait(self.driver, 5)
         try:
@@ -181,7 +181,7 @@ class Parse:
             if container_type == "standard-container":
                 images = container.select('.article-body-content h2 ~ div.embed img')
                 headers = container.select('.article-body-content hr + .body-h2, div.embed + .body-h2, .body-text + .accordion ~ .body-h2')
-                links = container.select('.article-body-content h2 ~ div.embed a')
+                #links = container.select('.article-body-content h2 ~ div.embed a')
 
                 if len(images) < len(headers):
                     headers = headers[:-(len(headers) - len(images))]
@@ -189,11 +189,11 @@ class Parse:
             elif container_type == 'listicle-container':
                 images = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-media-outer img')
                 headers = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-hed-text')
-                links = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-media-outer a')
+                #links = container.select('.listicle-body-content .listicle-slide-product .listicle-slide-media-outer a')
             else:
                 return None
 
-            if len(images) == len(headers) and len(images) == len(links):
+            if len(images) == len(headers):
                 for idx, story in enumerate(images):
                     pathToImage = f'./img/{idx}.jpg'
                     path = f'{config.path_to_stories}/{"_".join(title.split(" ")).split(".")[0]}/img/{idx}.jpg'
@@ -204,7 +204,9 @@ class Parse:
 
                     pathToImage = self.save_image(result, pathToImage, path)
 
-                    stories.append({'header': headers[idx].text, 'image': pathToImage, 'link': links[idx]['href']})
+                    stories.append({'header': headers[idx].text, 'image': pathToImage})
+            else:
+                return None
 
             return stories
 
@@ -235,8 +237,11 @@ class Parse:
             content_header = article_soup.find('div', {'class': 'content-header-inner'})
             content_header_title = content_header.find('h1', {'class': 'content-hed'}).text
             content_header_description = content_header.find('div', {'class': 'content-dek'}).text
-            content_poster = self.find_poster_path(res.text, content_header_title)
             stories = self.find_stories(res.text, content_header_title)
+            content_poster = None
+
+            if stories != None:
+                content_poster = self.find_poster_path(res.text, content_header_title)
             #print(content_poster)
 
             if content_poster != None and stories != None:
@@ -250,7 +255,7 @@ class Parse:
                 build.build_story("", "", content_header_description, story_type="first_story")
 
                 for story in stories:
-                    build.build_story(story['image'], story['header'], "", story['link'])
+                    build.build_story(story['image'], story['header'], "", "")
 
                 build.build_end_page()
 
