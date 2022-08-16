@@ -1,14 +1,13 @@
 keywords_for_search = "Best"
 min_count_image_on_page = 5
-initial_query_for_search = "https://www.cosmopolitan.com/search/?q=BEAUTY"
-path_to_save_images = "assets/images"
-path_to_save_pages = "assets/pages"
-publisher = "Cosmo"
-publisher_logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/How_to_use_icon.svg/1200px-How_to_use_icon.svg.png"
-timeout_page_generate = 100
+initial_query_for_search = "https://www.quora.com/search?q=pets&type=question"
+publisher = "Pets"
+publisher_logo = "https://amerikanki.com/amp_logo.png"
+timeout_page_generate = 20
 path_root = ".." # path to domain root
 path_to_stories = path_root + "/stories"
 my_domain = "http://8.eprosto.online"
+limit_of_answers = 350
 
 style_for_page = """
 <style amp-boilerplate>
@@ -85,11 +84,15 @@ style_for_page = """
 <style amp-custom>
     amp-story {
         font-family: 'Oswald', sans-serif;
-        color: #fff;
+        color: #EF0E7C;
     }
 
     amp-story-page {
         background-color: #000;
+    }
+
+    amp-img {
+        opacity: 0.5;
     }
 
     h1 {
@@ -97,7 +100,7 @@ style_for_page = """
         font-size: 2.2em;
         font-weight: normal;
         line-height: 1.174;
-        background-color: black;
+        background-color: gray;
         padding: 0.5em;
     }
 
@@ -120,10 +123,10 @@ style_for_page = """
 
     amp-story-grid-layer.bottom h4 {
         font-weight: bold;
-        font-size: 1.8em;
+        font-size: 1.2em;
         font-weight: normal;
         line-height: 1.174;
-        background-color: black;
+        background-color: gray;
         padding: 0.5em;
         margin-bottom: 2.2em;
     }

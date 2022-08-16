@@ -1,5 +1,4 @@
 from os import mkdir
-from tkinter import N
 from PIL import Image
 import os
 import re
@@ -65,6 +64,7 @@ class Parse:
                 session = HTMLSession()
                 res = session.get('https://www.cosmopolitan.com' + article.find('a')['href'])
                 article_soup = bs(res.text, 'html.parser')
+                images = []
                 try:
                     try:
                         images = article_soup.find('div', {'class': 'listicle-body-content'}).find_all('img')
@@ -262,7 +262,7 @@ class Parse:
 
                 self.register_sitemap(f'{config.my_domain}{path.split(config.path_root)[1]}.html')
 
-            time.sleep(config.timeout_page_generate * 60)
+                time.sleep(config.timeout_page_generate)
 
     def __del__(self):
         self.driver.quit()
